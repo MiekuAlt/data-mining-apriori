@@ -10,6 +10,8 @@ public class Main {
 	private static double confidence;
 	
 	public static void main(String[] args) {
+		/* TODO: Remove this, using it to avoid input
+		
 		// Initial User Input - filename
 		System.out.print("Welcome to Apriori Miner!\nPlease enter data file's name: ");
 		Scanner in = new Scanner(System.in);
@@ -46,7 +48,7 @@ public class Main {
 		// Just closing the scanner
 		in.close();
 		
-		
+		Remove me!! */ 
 		
 		
 		//TODO: Remove this roughed out input and replace with a real one
@@ -56,6 +58,7 @@ public class Main {
 		fakeData.add(Arrays.asList("sunny", "hot", "high", "false", "N"));
 		fakeData.add(Arrays.asList("sunny", "hot", "high", "true", "N"));
 		fakeData.add(Arrays.asList("overcast", "hot", "high", "false", "P"));
+		fakeData.add(Arrays.asList("overcast", "hot", "high", "false", "P")); // added this to check duplicates
 		fakeData.add(Arrays.asList("rain", "mild", "high", "false", "P"));
 		
 		double minSupport = 0.0, minConfidence = 0.0;
