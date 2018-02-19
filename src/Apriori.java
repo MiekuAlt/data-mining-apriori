@@ -97,8 +97,8 @@ public final class Apriori {
 			invertedTable.add(new ArrayList<String>());
 		}
 		// Filling the columns with all possible values
-		for(int r = 1; r < inputData.size(); r ++) {
-			for(int c = 0; c < inputData.get(r).size(); c++) { // Skipping first row, since they are the names
+		for(int r = 0; r < inputData.size(); r ++) {
+			for(int c = 0; c < inputData.get(r).size(); c++) {
 				invertedTable.get(c).add(inputData.get(r).get(c));
 			}
 		}

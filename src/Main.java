@@ -54,14 +54,13 @@ public class Main {
 		//TODO: Remove this roughed out input and replace with a real one
 		List<List<String>> fakeData = new ArrayList<List<String>>();
 		// Setting up some faked data from DATA1 for Michael to work with
-		fakeData.add(Arrays.asList("outlook", "temperature", "Humidity", "Windy", "PlayTennis"));
 		fakeData.add(Arrays.asList("sunny", "hot", "high", "false", "N"));
 		fakeData.add(Arrays.asList("sunny", "hot", "high", "true", "N"));
 		fakeData.add(Arrays.asList("overcast", "hot", "high", "false", "P"));
 		fakeData.add(Arrays.asList("overcast", "hot", "high", "false", "P")); // added this to check duplicates
 		fakeData.add(Arrays.asList("rain", "mild", "high", "false", "P"));
-		
-		double minSupport = 0.5, minConfidence = 0.5;
+
+		double minSupport = 0.3, minConfidence = 0.3;
 		
 		List<String> rules = Apriori.runApriori(fakeData, minSupport, minConfidence);
 		System.out.println("Fake rules:\n" + rules);
