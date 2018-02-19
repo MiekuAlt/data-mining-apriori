@@ -16,21 +16,51 @@ public final class Apriori {
 		minSupport = supportInput;
 		minConfidence = confidenceInput;
 		
+		List<Item> uniqueItems;
 		List<KeyValue> candTable;
 		List<KeyValue> freqTable;
 		// Find all the unique itemSets in the data
-		candTable = buildFirstCand(findUniques());
+		uniqueItems = findUniquesInData(data);
+		numUniques = uniqueItems.size();
+		
+		candTable = buildFirstCand(uniqueItems);
 		
 		freqTable = buildFreq(candTable);
 		
+		uniqueItems = expandItemSet(freqTable, 2);
 		
 		//TODO: Remove this dummy output
 		List<String> dummyRules = Arrays.asList("(Support=0.29, Confidence=1.00) { outlook=overcast } ----> { PlayTennis=P }", "(Support=0.29, Confidence=0.67) { temperature=mild } ----> { Humidity=high }");
 		return dummyRules;
 	}
 	
+	// Expands the itemSets to the nth
+	private static List<Item> expandItemSet(List<KeyValue> table, int n) {
+		
+		List<String> curData = convertTableToData(table);
+		List<Item> expandedItemSets = new ArrayList<Item>();
+		
+		
+		return null;
+	}
 	
-	// Calculates the support value on an itemset
+	// Converts a table into the same datatype this is read on input
+	private static List<String> convertTableToData(List<KeyValue> table) {
+		
+		List<String> newData = new ArrayList<String>();
+		
+		for(int r = 0; r < table.size(); r++) {
+			for(int c = 0; c < table.get(r).itemSet.size(); c++) {
+				newData.add(table.get(r).itemSet.get(c).value);
+				System.out.print(newData.get(r));
+			}
+			System.out.println("");
+		}
+		
+		return newData;
+	}
+	
+	// Calculates the support value on an itemSet
 	private static double calcSupport(List<Item> itemsChecked) {
 		int numSupport = 0;
 
@@ -39,16 +69,16 @@ public final class Apriori {
 			for(int i = 0; i < itemsChecked.size(); i++) {
 				Item curItem = itemsChecked.get(i);
 				// Ensures that all the items in the set fit
-				if(inputData.get(r).get(curItem.index).equals(curItem.value)) {
-					amount--;
+				for(int c = 0; c < inputData.get(c).size() - 1; c++) {
+					if(inputData.get(r).get(c).equals(curItem.value)) {
+						amount--;
+					}
 				}
 			}
 			// If everything matches, increase support
 			if(amount == 0) 
 				numSupport++;
 		}
-		
-		
 		
 		return numSupport / numUniques;
 	}
@@ -86,42 +116,30 @@ public final class Apriori {
 	
 	
 	// Finds all of the unique items in the data
-	private static List<Item> findUniques() {
+	private static List<Item> findUniquesInData(List<List<String>> data) {
+		List<String> allItems = new ArrayList<String>();
 		
-		List<Item> uniqueItems = new ArrayList<Item>();
-		
-		// Grabbing all the possible items
-		List<List<String>> invertedTable = new ArrayList<List<String>>(); // the original is row, col. This is col, row
-		// Initializing each column
-		for(int c = 0; c <inputData.get(0).size(); c++) {
-			invertedTable.add(new ArrayList<String>());
-		}
-		// Filling the columns with all possible values
-		for(int r = 0; r < inputData.size(); r ++) {
-			for(int c = 0; c < inputData.get(r).size(); c++) {
-				invertedTable.get(c).add(inputData.get(r).get(c));
+		for(int r = 0; r < data.size(); r ++) {
+			for(int c = 0; c < data.get(r).size(); c++) {
+				allItems.add(data.get(r).get(c));
 			}
 		}
-		// Removing duplicates from each column
-		for(int c = 0; c < invertedTable.size(); c++) {
-			Set<String> hs = new HashSet<>();
-			hs.addAll(invertedTable.get(c));
-			List<String> ls = new ArrayList<String>();
-			ls.addAll(hs);
-			
-			// Inserting the unique entries
-			for(int i = 0; i < hs.size(); i++) {
-				uniqueItems.add(new Item(c, ls.get(i)));
-			}			
+		
+		// This is derived from an example here https://stackoverflow.com/questions/203984/how-do-i-remove-repeated-elements-from-arraylist
+		Set<String> hs = new HashSet<>();
+		hs.addAll(allItems);
+		List<String> uniques = new ArrayList<String>();
+		uniques.addAll(hs);
+		
+		List<Item> uniqueItems = new ArrayList<Item>();
+		for(int i = 0; i < uniques.size(); i++) {
+			uniqueItems.add(new Item(uniques.get(i)));
 		}
-				
 		
 		// TODO: For testing
 		for(int i = 0; i < uniqueItems.size(); i ++) {
-			System.out.println("Num: " + i + " | Index: " + uniqueItems.get(i).index + " | Value: " + uniqueItems.get(i).value);
+			System.out.println("Num: " + i + " | Value: " + uniqueItems.get(i).value);
 		}
-		
-		numUniques = uniqueItems.size();
 		
 		return uniqueItems;
 	}
@@ -152,15 +170,8 @@ class KeyValue {
 
 // The item and its value
 class Item {
-	int index;
 	String value;
-	public Item(int index, String value) {
-		this.index = index;
+	public Item(String value) {
 		this.value = value;
-	}
-
-	// Checks if this item is the same as one being checked
-	public boolean isEqual(Item otherItem) {
-		return index == (otherItem.index) && value.equals(otherItem.value);
 	}
 }
