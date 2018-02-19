@@ -10,7 +10,7 @@ public class Main {
 	private static double confidence;
 	
 	public static void main(String[] args) {
-		/* TODO: Remove this, using it to avoid input
+
 		
 		// Initial User Input - filename
 		System.out.print("Welcome to Apriori Miner!\nPlease enter data file's name: ");
@@ -48,7 +48,7 @@ public class Main {
 		// Just closing the scanner
 		in.close();
 		
-		Remove me!! */ 
+
 		
 		
 		//TODO: Remove this roughed out input and replace with a real one

@@ -18,11 +18,20 @@ public final class Apriori {
 		
 		List<KeyValue> freqTable = genTables();
 		
-		printTable(freqTable, "Frequency");
+		printTable(freqTable, "Frequency"); // TODO: Remove me!
+		
+		// Association aspect of the algorithm
+		runAssociation(freqTable);
+		
 		
 		//TODO: Remove this dummy output
 		List<String> dummyRules = Arrays.asList("(Support=0.29, Confidence=1.00) { outlook=overcast } ----> { PlayTennis=P }", "(Support=0.29, Confidence=0.67) { temperature=mild } ----> { Humidity=high }");
 		return dummyRules;
+	}
+	
+	// Begins the Association aspect of the algorithm
+	private static void runAssociation(List<KeyValue> freqTable) {
+		
 	}
 	
 	// Generates the tables until there are none left
