@@ -16,35 +16,39 @@ public final class Apriori {
 		minSupport = supportInput;
 		minConfidence = confidenceInput;
 		
-		List<List<String>> curDataSets;
-		List<Item> uniqueItems;
-		List<KeyValue> candTable;
-		List<KeyValue> freqTable;
-		// Find all the unique itemSets in the data
-		uniqueItems = findUniquesInData(data);
+		List<KeyValue> freqTable = genTables();
 		
-		candTable = buildFirstCand(uniqueItems);
-		
-		freqTable = buildFreq(candTable);
-		
-		curDataSets = expandItemSet(freqTable, 2);
-		candTable = buildCand(curDataSets);
-		freqTable = buildFreq(candTable);
-		
-		curDataSets = expandItemSet(freqTable, 3);
-		candTable = buildCand(curDataSets);
-		freqTable = buildFreq(candTable);
-		
-		curDataSets = expandItemSet(freqTable, 4);
-		candTable = buildCand(curDataSets);
-		freqTable = buildFreq(candTable);
-		
-		System.out.println("Test Freq: ");
-		printTable(freqTable);
+		printTable(freqTable, "Frequency");
 		
 		//TODO: Remove this dummy output
 		List<String> dummyRules = Arrays.asList("(Support=0.29, Confidence=1.00) { outlook=overcast } ----> { PlayTennis=P }", "(Support=0.29, Confidence=0.67) { temperature=mild } ----> { Humidity=high }");
 		return dummyRules;
+	}
+	
+	// Generates the tables until there are none left
+	private static List<KeyValue> genTables() {
+		
+		List<List<String>> curDataSets;
+		List<Item> uniqueItems;
+		List<KeyValue> candTable;
+		List<KeyValue> freqTable;
+		
+		uniqueItems = findUniquesInData(inputData);
+		candTable = buildFirstCand(uniqueItems);
+		freqTable = buildFreq(candTable);
+		
+		List<KeyValue> prevFreqTable = new ArrayList<KeyValue>();
+		
+		int iteration = 2;
+		while(!freqTable.isEmpty()) {
+			prevFreqTable = freqTable;
+			curDataSets = expandItemSet(freqTable, iteration);
+			candTable = buildCand(curDataSets);
+			freqTable = buildFreq(candTable);
+			iteration++;
+		}
+		
+		return prevFreqTable;
 	}
 	
 	// Expands the itemSets to the nth based on an example from https://stackoverflow.com/questions/5162254/all-possible-combinations-of-an-array
@@ -54,7 +58,6 @@ public final class Apriori {
 		List<List<String>> expandSet = new LinkedList<List<String>>();
 
 	    expandSet.addAll(combination(curData, n));
-	    System.out.println("Expanded: " + expandSet);
 		return expandSet;
 	}
 	
@@ -127,10 +130,7 @@ public final class Apriori {
 				cand.remove(r);
 			}
 		}
-		
-		System.out.print("Freq ");
-		printTable(cand);
-		
+			
 		return cand;
 	}
 	
@@ -146,8 +146,6 @@ public final class Apriori {
 			}
 			canTable.add(new KeyValue(entry, calcSupport(entry)));
 		}
-		System.out.println("Can Table: ");
-		printTable(canTable);
 		return canTable;
 	}
 	
@@ -161,9 +159,6 @@ public final class Apriori {
 			entry.add(itemSets.get(i));
  			canTable.add(new KeyValue(entry, calcSupport(entry)));
 		}
-		System.out.println("Cand Table test");
-		printTable(canTable);
-		
 		return canTable;
 	}
 	
@@ -186,17 +181,12 @@ public final class Apriori {
 			uniqueItems.add(new Item(uniques.get(i)));
 		}
 		
-		// TODO: For testing
-		for(int i = 0; i < uniqueItems.size(); i ++) {
-			System.out.println("Num: " + i + " | Value: " + uniqueItems.get(i).value);
-		}
-		
 		return uniqueItems;
 	}
 	
 	// TODO: For testing, prints a table
-	public static void printTable(List<KeyValue> tableInfo) {
-		System.out.println("Table");
+	public static void printTable(List<KeyValue> tableInfo, String name) {
+		System.out.println("==================== " + name + " Table ====================");
 		for(int r = 0; r < tableInfo.size(); r++) {
 			for(int c = 0; c < tableInfo.get(r).itemSet.size(); c++) {
 				System.out.print(tableInfo.get(r).itemSet.get(c).value + "\t| ");
@@ -204,6 +194,7 @@ public final class Apriori {
 			System.out.print(tableInfo.get(r).support + " |");
 			System.out.println("");
 		}
+		System.out.println("=========================================================\n");
 	}
 	
 	// Removes duplicates from a list of strings

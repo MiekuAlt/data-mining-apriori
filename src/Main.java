@@ -60,7 +60,7 @@ public class Main {
 		fakeData.add(Arrays.asList("outlook=overcast", "temperature=hot", "Humidity=high", "Windy=false", "PlayTennis=P")); // added this to check duplicates
 		fakeData.add(Arrays.asList("outlook=rain", "temperature=mild", "Humidity=high", "Windy=false", "PlayTennis=P"));
 
-		double minSupport = 0.5, minConfidence = 0.1;
+		double minSupport = .5, minConfidence = 0.1;
 		
 		List<String> rules = Apriori.runApriori(fakeData, minSupport, minConfidence);
 		System.out.println("Fake rules:\n" + rules);
