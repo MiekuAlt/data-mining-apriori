@@ -47,7 +47,7 @@ public final class Apriori {
 		
 		// Purging repeats from the rules generated from the two sets of rows in the table
 		for(int i = rules.size() - 1; i >= 0; i--) {
-			if(rules.get(i).hasRepeat()) {
+			if(rules.get(i).hasRepeat() || rules.get(i).confidence < minConfidence) {
 				rules.remove(i);
 			}
 		}
@@ -216,7 +216,7 @@ public final class Apriori {
 	private static List<KeyValue> buildFreq(List<KeyValue> cand) {
 
 		for(int r = cand.size() - 1; r >= 0; r--) {
-			if(cand.get(r).support <= minSupport) {
+			if(cand.get(r).support < minSupport) {
 				cand.remove(r);
 			}
 		}
