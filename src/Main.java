@@ -56,14 +56,14 @@ public class Main {
 			in = new Scanner(System.in);
 			try {
 				confidence = in.nextDouble();
-				if (support>=1 && support<=100) {
-					support = support/100;
+				if (confidence>=1 && confidence<=100) {
+					confidence = confidence/100;
 				}
 				while (confidence>1 || confidence<0) {
 					System.out.print("Invalid number, please enter a percentage between 0 and 100: ");
 					confidence = in.nextDouble();
-					if (support>=1 && support<=100) {
-						support = support/100;
+					if (confidence>=1 && confidence<=100) {
+						confidence = confidence/100;
 					}
 				}
 			} catch(Exception e) {

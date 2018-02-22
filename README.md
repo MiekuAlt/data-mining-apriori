@@ -4,12 +4,32 @@ Michael Altair B00599791
 
 # data-mining-apriori
 Compiling) 
-
+The program can be compiled using javac as per the example.
+1) Place the data files alongside Main.java.
+2) run javac Main.java in the terminal
+3) run java Main 
 
 Running the program) 
 Once it runs, you will be prompted for the input file and values for the support and confidence.
-input the local path to the file in question (data1 if it is in the same directory for example), and a number between 0 and 100 for the support and confidence.
+input the local path to the file in question (data1 if it is in the same directory for example), and either a percentage or a decimal for the support and confidence.
 The program will give errors in the console if the numbers are out of scope, or if it cannot find the file.
+
+The program only has one supporting file for the main file, we used a black box approach in that the main file inputs data and gets data back, without doing any manipulating itself.
+apriori.java has the following methods: 
+
+public static List<String> runApriori(List<List<String>> data, double supportInput, double confidenceInput)
+private static void runAssociation(List<KeyValue> freqTable)
+private static List<KeyValue> genTables()
+private static List<List<String>> expandItemSet(List<KeyValue> table, int n)
+public static <T> List<List<T>> combination(List<T> values, int size)
+private static List<String> convertTableToData(List<KeyValue> table)
+private static double calcSupport(List<Item> itemsChecked)
+private static List<KeyValue> buildFreq(List<KeyValue> cand)
+private static List<KeyValue> buildCand(List<List<String>> itemSets)
+private static List<KeyValue> buildFirstCand(List<Item> itemSets)
+private static List<Item> findUniquesInData(List<List<String>> data)
+public static void printTable(List<KeyValue> tableInfo, String name)
+private static List<String> removeDups(List<String> withDups)
 
 Overall Flow) 
 The input system reads the file line by line, using the first line to set up a tagging system, and adding the tags to each of the data values in the following lines.
