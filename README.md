@@ -28,7 +28,6 @@ private static List<KeyValue> buildFreq(List<KeyValue> cand)
 private static List<KeyValue> buildCand(List<List<String>> itemSets)
 private static List<KeyValue> buildFirstCand(List<Item> itemSets)
 private static List<Item> findUniquesInData(List<List<String>> data)
-public static void printTable(List<KeyValue> tableInfo, String name)
 private static List<String> removeDups(List<String> withDups)
 
 Overall Flow) 
