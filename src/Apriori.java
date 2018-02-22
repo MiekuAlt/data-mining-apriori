@@ -13,20 +13,24 @@ public final class Apriori {
 	private static List<List<String>> inputData;
 	private static double minSupport, minConfidence;
 	
+	private static List<KeyValue> finalTable;
+	
 	public static List<String> runApriori(List<List<String>> data, double supportInput, double confidenceInput) {
 		inputData = data;
 		minSupport = supportInput;
 		minConfidence = confidenceInput;
-		
-		List<KeyValue> freqTable = genTables();
+		finalTable = new ArrayList<KeyValue>();
+ 		List<KeyValue> freqTable = genTables();
 		
 		printTable(freqTable, "Frequency"); // TODO: Remove me!
 		
 		// Association aspect of the algorithm to generate the rules
-		List<String> rules = runAssociation(freqTable);
+		List<String> rules = runAssociation(finalTable);
 		List<String> output = new ArrayList<String>();
 		System.out.println("Association:");
 
+		rules = removeDups(rules);
+		
 		for(int i = 0; i <rules.size(); i++) {
 			output.add("Rule#" + (i + 1) + ": " + rules.get(i) + "\n");
 		}
@@ -48,7 +52,7 @@ public final class Apriori {
 				rules.remove(i);
 			}
 		}
-						
+								
 		List<String> output = new ArrayList<String>();
 		for(int i = 0; i < rules.size(); i++) {
 			output.add(rules.get(i).toString());
@@ -135,7 +139,15 @@ public final class Apriori {
 			curDataSets = expandItemSet(freqTable, iteration);
 			candTable = buildCand(curDataSets);
 			printTable(candTable, "Candidate"); // TODO: Remove me!
-			freqTable = buildFreq(candTable);
+			
+			// TODO: Attempt to fix bug
+			/*
+			List<KeyValue> tempFreqTable = buildFreq(candTable);
+			for(int i = 0; i < tempFreqTable.size(); i++) {
+				freqTable.add(tempFreqTable.get(i));
+			}
+			*/
+			freqTable = buildFreq(candTable); // this was here previously
 			iteration++;
 		}
 		
@@ -220,6 +232,13 @@ public final class Apriori {
 				cand.remove(r);
 			}
 		}
+		
+		for(int i = 0; i < cand.size(); i++) {
+			finalTable.add(cand.get(i));
+		}
+		
+		
+		
 		return cand;
 	}
 	
