@@ -222,9 +222,6 @@ public final class Apriori {
 		for(int i = 0; i < cand.size(); i++) {
 			finalTable.add(cand.get(i));
 		}
-		
-		
-		
 		return cand;
 	}
 	
@@ -278,19 +275,6 @@ public final class Apriori {
 		return uniqueItems;
 	}
 	
-	// TODO: For testing, prints a table
-	public static void printTable(List<KeyValue> tableInfo, String name) {
-		System.out.println("==================== " + name + " Table ====================");
-		for(int r = 0; r < tableInfo.size(); r++) {
-			for(int c = 0; c < tableInfo.get(r).itemSet.size(); c++) {
-				System.out.print(tableInfo.get(r).itemSet.get(c).value + "\t| ");
-			}
-			System.out.print(tableInfo.get(r).support + " |");
-			System.out.println("");
-		}
-		System.out.println("=========================================================\n");
-	}
-	
 	// Removes duplicates from a list of strings
 	private static List<String> removeDups(List<String> withDups) {
 		// This is derived from an example here https://stackoverflow.com/questions/203984/how-do-i-remove-repeated-elements-from-arraylist
@@ -303,7 +287,6 @@ public final class Apriori {
 	}
 	
 } // end of the Apriori class
-
 
 // A table row in both candidate and frequency tables
 class KeyValue {
@@ -327,7 +310,7 @@ class Rule {
 	List<Item> base;
 	List<Item> implies;
 	double confidence;
-	double support; // I am assuming it is support for the whole itemsets, assign is unclear
+	double support; 
 	
 	public Rule(List<Item> base, List<Item> implies) {
 		this.base = base;
