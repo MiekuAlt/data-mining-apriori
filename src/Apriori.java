@@ -24,17 +24,14 @@ public final class Apriori {
 		
 		// Association aspect of the algorithm to generate the rules
 		List<String> rules = runAssociation(freqTable);
+		List<String> output = new ArrayList<String>();
 		System.out.println("Association:");
-		//System.out.println(rules);
+
 		for(int i = 0; i <rules.size(); i++) {
-			System.out.print("Rule#" + (i + 1) + ": ");
-			System.out.println(rules.get(i));
-			System.out.println("");
+			output.add("Rule#" + (i + 1) + ": " + rules.get(i) + "\n");
 		}
 		
-		//TODO: Remove this dummy output
-		List<String> dummyRules = Arrays.asList("(Support=0.29, Confidence=1.00) { outlook=overcast } ----> { PlayTennis=P }", "(Support=0.29, Confidence=0.67) { temperature=mild } ----> { Humidity=high }");
-		return dummyRules;
+		return output;
 	}
 	
 	// Begins the Association aspect of the algorithm
@@ -126,7 +123,9 @@ public final class Apriori {
 		
 		uniqueItems = findUniquesInData(inputData);
 		candTable = buildFirstCand(uniqueItems);
+		printTable(candTable, "Candidate First"); // TODO: Remove me!
 		freqTable = buildFreq(candTable);
+		printTable(freqTable, "Freq"); // TODO: Remove me!
 		
 		List<KeyValue> prevFreqTable = new ArrayList<KeyValue>();
 		
@@ -135,6 +134,7 @@ public final class Apriori {
 			prevFreqTable = freqTable;
 			curDataSets = expandItemSet(freqTable, iteration);
 			candTable = buildCand(curDataSets);
+			printTable(candTable, "Candidate"); // TODO: Remove me!
 			freqTable = buildFreq(candTable);
 			iteration++;
 		}
