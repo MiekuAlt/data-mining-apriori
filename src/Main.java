@@ -57,10 +57,19 @@ public class Main {
 		fakeData.add(Arrays.asList("outlook=sunny", "temperature=hot", "Humidity=high", "Windy=false", "PlayTennis=N"));
 		fakeData.add(Arrays.asList("outlook=sunny", "temperature=hot", "Humidity=high", "Windy=true", "PlayTennis=N"));
 		fakeData.add(Arrays.asList("outlook=overcast", "temperature=hot", "Humidity=high", "Windy=false", "PlayTennis=P"));
-		fakeData.add(Arrays.asList("outlook=overcast", "temperature=hot", "Humidity=high", "Windy=false", "PlayTennis=P")); // added this to check duplicates
 		fakeData.add(Arrays.asList("outlook=rain", "temperature=mild", "Humidity=high", "Windy=false", "PlayTennis=P"));
+		fakeData.add(Arrays.asList("outlook=rain", "temperature=cool", "Humidity=normal", "Windy=false", "PlayTennis=P"));
+		fakeData.add(Arrays.asList("outlook=rain", "temperature=cool", "Humidity=normal", "Windy=true", "PlayTennis=N"));
+		fakeData.add(Arrays.asList("outlook=overcast", "temperature=cool", "Humidity=normal", "Windy=true", "PlayTennis=P"));
+		fakeData.add(Arrays.asList("outlook=sunny", "temperature=mild", "Humidity=high", "Windy=false", "PlayTennis=N"));
+		fakeData.add(Arrays.asList("outlook=sunny", "temperature=cool", "Humidity=normal", "Windy=false", "PlayTennis=P"));
+		fakeData.add(Arrays.asList("outlook=rain", "temperature=mild", "Humidity=normal", "Windy=false", "PlayTennis=P"));
+		fakeData.add(Arrays.asList("outlook=sunny", "temperature=mild", "Humidity=normal", "Windy=true", "PlayTennis=P"));
+		fakeData.add(Arrays.asList("outlook=overcast", "temperature=mild", "Humidity=high", "Windy=true", "PlayTennis=P"));
+		fakeData.add(Arrays.asList("outlook=overcast", "temperature=hot", "Humidity=normal", "Windy=false", "PlayTennis=P"));
+		fakeData.add(Arrays.asList("outlook=rain", "temperature=mild", "Humidity=high", "Windy=true", "PlayTennis=N"));
 
-		double minSupport = .5, minConfidence = 0.1;
+		double minSupport = .25, minConfidence = 0.5;
 		
 		List<String> rules = Apriori.runApriori(fakeData, minSupport, minConfidence);
 		System.out.println("Fake rules:\n" + rules);

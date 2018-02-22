@@ -1,3 +1,5 @@
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,9 +22,15 @@ public final class Apriori {
 		
 		printTable(freqTable, "Frequency"); // TODO: Remove me!
 		
-		// Association aspect of the algorithm
-		runAssociation(freqTable);
-		
+		// Association aspect of the algorithm to generate the rules
+		List<String> rules = runAssociation(freqTable);
+		System.out.println("Association:");
+		//System.out.println(rules);
+		for(int i = 0; i <rules.size(); i++) {
+			System.out.print("Rule#" + (i + 1) + ": ");
+			System.out.println(rules.get(i));
+			System.out.println("");
+		}
 		
 		//TODO: Remove this dummy output
 		List<String> dummyRules = Arrays.asList("(Support=0.29, Confidence=1.00) { outlook=overcast } ----> { PlayTennis=P }", "(Support=0.29, Confidence=0.67) { temperature=mild } ----> { Humidity=high }");
@@ -30,10 +38,84 @@ public final class Apriori {
 	}
 	
 	// Begins the Association aspect of the algorithm
-	private static void runAssociation(List<KeyValue> freqTable) {
+	private static List<String> runAssociation(List<KeyValue> freqTable) {
+		List<Rule> rules = new ArrayList<Rule>();
+		// Breaking the table apart into rows
+		for(int r = 0; r < freqTable.size(); r++) {
+			rules.addAll(rulesForRow(freqTable.get(r)));
+		}
 		
+		// Purging repeats from the rules generated from the two sets of rows in the table
+		for(int i = rules.size() - 1; i >= 0; i--) {
+			if(rules.get(i).hasRepeat()) {
+				rules.remove(i);
+			}
+		}
+						
+		List<String> output = new ArrayList<String>();
+		for(int i = 0; i < rules.size(); i++) {
+			output.add(rules.get(i).toString());
+		}
+		
+		return output;
 	}
 	
+	// Generates the rules for the row of the frequency table
+	private static List<Rule> rulesForRow(KeyValue rowValue) {
+		
+		// Determines all the subsets required for the row
+		List<List<String>> subsets = genSubsets(rowValue.itemSet);
+		
+		List<Rule> rules = genImplications(subsets);
+		
+		return rules;
+	}
+	
+	// Finds implications
+	private static List<Rule> genImplications(List<List<String>> subsets) {
+		List<Rule> rules = new ArrayList<Rule>();
+		
+		for(int r = 0; r < subsets.size(); r++) {
+			List<Item> base = new ArrayList<Item>();
+			for(int c = 0; c < subsets.get(r).size(); c++) {
+				base.add(new Item(subsets.get(r).get(c)));
+			}
+			
+			for(int ri = 0; ri < subsets.size(); ri++) {
+				List<Item> implication = new ArrayList<Item>();
+				for(int ci = 0; ci < subsets.get(ri).size(); ci++) {
+					implication.add(new Item(subsets.get(ri).get(ci)));
+				}
+				rules.add(new Rule(base, implication));
+			}
+		}
+		
+		// Purging repeats
+		for(int i = rules.size() - 1; i >= 0; i--) {
+			if(rules.get(i).hasRepeat()) {
+				rules.remove(i);
+			}
+		}
+		
+		return rules;
+	}
+	
+	// Breaks the set into all the subsets needed for association
+	private static List<List<String>> genSubsets(List<Item> initialSets) {
+		 List<List<String>> subsets = new ArrayList<List<String>>();
+		 // Convert the item list to a string list for processing
+		 List<String> setString = new ArrayList<String>();
+		 for(int i = 0; i <initialSets.size(); i++) {
+			 setString.add(initialSets.get(i).value);
+		 }
+		 
+		 int numSets = setString.size();
+		 for (int i = 1; i < numSets; i++)
+			 subsets.addAll(combination(setString, i));
+		 
+		 return subsets;
+	}
+		
 	// Generates the tables until there are none left
 	private static List<KeyValue> genTables() {
 		
@@ -111,7 +193,7 @@ public final class Apriori {
 	}
 	
 	// Calculates the support value on an itemSet
-	private static double calcSupport(List<Item> itemsChecked) {
+	public static double calcSupport(List<Item> itemsChecked) {
 		int numSupport = 0;
 
 		for(int r = 0; r < inputData.size(); r++ ) {
@@ -127,7 +209,6 @@ public final class Apriori {
 				}
 			}
 		}
-		
 		return numSupport / ((double)inputData.size());
 	}
 	
@@ -135,11 +216,10 @@ public final class Apriori {
 	private static List<KeyValue> buildFreq(List<KeyValue> cand) {
 
 		for(int r = cand.size() - 1; r >= 0; r--) {
-			if(cand.get(r).support < minSupport) {
+			if(cand.get(r).support <= minSupport) {
 				cand.remove(r);
 			}
 		}
-			
 		return cand;
 	}
 	
@@ -235,5 +315,72 @@ class Item {
 	String value;
 	public Item(String value) {
 		this.value = value;
+	}
+}
+
+class Rule {
+	List<Item> base;
+	List<Item> implies;
+	double confidence;
+	double support; // I am assuming it is support for the whole itemsets, assign is unclear
+	
+	public Rule(List<Item> base, List<Item> implies) {
+		this.base = base;
+		this.implies = implies;
+		calcConfidence();
+	}
+	
+	public String toString() {
+		
+		String baseString = "{ ";
+		String impString = "{ ";
+		
+		for(int i = 0; i < base.size(); i++) 
+			baseString += base.get(i).value + " ";
+		baseString += "}";
+		
+		for(int i = 0; i < implies.size(); i++) 
+			impString += implies.get(i).value + " ";
+		impString += "}";
+		
+		return "(Support=" + support + ", " + "Confidence=" + confidence + ")\n" + baseString + "\n----> " + impString;
+	}
+	
+	public boolean hasRepeat() {
+		boolean result = false;
+
+		for(int b = 0; b < base.size(); b++) {
+			for(int i = 0; i < implies.size(); i++) {
+				if(base.get(b).value.equals(implies.get(i).value)) {
+					result = true;
+					return result;
+				}
+			}
+		}
+		return false;
+	}
+	// Determines the confidence value of the rule, also fills in the support
+	public void calcConfidence() {
+
+		double baseSupport = Apriori.calcSupport(base);
+		List<Item> entireSet = new ArrayList<Item>();
+		for(int i = 0; i < base.size(); i++) {
+			entireSet.add(base.get(i));
+		}
+		for(int i = 0; i < implies.size(); i++) {
+			entireSet.add(implies.get(i));
+		}
+		double allSupport = Apriori.calcSupport(entireSet);
+		
+		double result = allSupport / baseSupport;
+		
+		// Reducing sigfigs, based on an example from: https://stackoverflow.com/questions/7548841/round-a-double-to-3-significant-figures
+		BigDecimal bd = new BigDecimal(result);
+		bd = bd.round(new MathContext(2));
+		confidence = bd.doubleValue();
+		
+		bd = new BigDecimal(allSupport);
+		bd = bd.round(new MathContext(2));
+		support = bd.doubleValue();
 	}
 }
