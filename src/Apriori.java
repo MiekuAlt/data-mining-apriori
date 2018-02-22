@@ -1,7 +1,6 @@
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -22,12 +21,9 @@ public final class Apriori {
 		finalTable = new ArrayList<KeyValue>();
  		List<KeyValue> freqTable = genTables();
 		
-		printTable(freqTable, "Frequency"); // TODO: Remove me!
-		
 		// Association aspect of the algorithm to generate the rules
 		List<String> rules = runAssociation(finalTable);
 		List<String> output = new ArrayList<String>();
-		System.out.println("Association:");
 
 		rules = removeDups(rules);
 		
@@ -127,9 +123,7 @@ public final class Apriori {
 		
 		uniqueItems = findUniquesInData(inputData);
 		candTable = buildFirstCand(uniqueItems);
-		printTable(candTable, "Candidate First"); // TODO: Remove me!
 		freqTable = buildFreq(candTable);
-		printTable(freqTable, "Freq"); // TODO: Remove me!
 		
 		List<KeyValue> prevFreqTable = new ArrayList<KeyValue>();
 		
@@ -138,15 +132,7 @@ public final class Apriori {
 			prevFreqTable = freqTable;
 			curDataSets = expandItemSet(freqTable, iteration);
 			candTable = buildCand(curDataSets);
-			printTable(candTable, "Candidate"); // TODO: Remove me!
-			
-			// TODO: Attempt to fix bug
-			/*
-			List<KeyValue> tempFreqTable = buildFreq(candTable);
-			for(int i = 0; i < tempFreqTable.size(); i++) {
-				freqTable.add(tempFreqTable.get(i));
-			}
-			*/
+
 			freqTable = buildFreq(candTable); // this was here previously
 			iteration++;
 		}
