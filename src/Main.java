@@ -27,16 +27,22 @@ public class Main {
 		int reloop;
 		do {
 			reloop = 0;
-			System.out.print("Please enter support percentage: ");
+			System.out.print("Please enter support percentage or a decimal: ");
 			in = new Scanner(System.in);
 			try {
-				support = in.nextDouble()/100;
+				support = in.nextDouble();
+				if (support>=1 && support<=100) {
+					support = support/100;
+				}
 				while (support>1 || support<0) {
-					System.out.print("Invalid number, please enter a percentage between 0 and 100: ");
-					support = in.nextDouble()/100;
+					System.out.print("Invalid number, please enter a percentage or a decimal: ");
+					support = in.nextDouble();
+					if (support>=1 && support<=100) {
+						support = support/100;
+					}
 				}
 			} catch(Exception e) {
-				System.out.println("Incorrect format, please enter a percentage between 0 and 100: ");
+				System.out.println("Incorrect format, please enter a percentage or a decimal: ");
 				reloop++;
 			}
 		} while(reloop != 0);
@@ -49,10 +55,16 @@ public class Main {
 			System.out.print("Please enter confidence percentage: ");
 			in = new Scanner(System.in);
 			try {
-				confidence = in.nextDouble()/100;
+				confidence = in.nextDouble();
+				if (support>=1 && support<=100) {
+					support = support/100;
+				}
 				while (confidence>1 || confidence<0) {
 					System.out.print("Invalid number, please enter a percentage between 0 and 100: ");
-					confidence = in.nextDouble()/100;
+					confidence = in.nextDouble();
+					if (support>=1 && support<=100) {
+						support = support/100;
+					}
 				}
 			} catch(Exception e) {
 				System.out.println("Incorrect format, please enter a percentage between 0 and 100: ");
