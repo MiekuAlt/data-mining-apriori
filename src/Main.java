@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
-import java.io.FileWriter;;
+import java.io.FileWriter;
 import java.io.File;
 
 public class Main {
@@ -23,6 +23,7 @@ public class Main {
 		filename = in.nextLine();
 		
 		// Initial User Input - support
+		// Accepts a number between 0 and 100
 		int reloop;
 		do {
 			reloop = 0;
@@ -35,13 +36,14 @@ public class Main {
 					support = in.nextDouble()/100;
 				}
 			} catch(Exception e) {
-				System.out.println("Incorrect format");
+				System.out.println("Incorrect format, please enter a percentage between 0 and 100: ");
 				reloop++;
 			}
 		} while(reloop != 0);
 
 		
-		// Initial User Input - confidence	
+		// Initial User Input - confidence
+		// Accepts a number between 0 and 100
 		do {
 			reloop = 0;
 			System.out.print("Please enter confidence percentage: ");
@@ -53,7 +55,7 @@ public class Main {
 					confidence = in.nextDouble()/100;
 				}
 			} catch(Exception e) {
-				System.out.println("Incorrect format");
+				System.out.println("Incorrect format, please enter a percentage between 0 and 100: ");
 				reloop++;
 			}
 		} while(reloop != 0);
@@ -61,35 +63,33 @@ public class Main {
 		// Just closing the scanner
 		in.close();
 
-		////////////////////////
-		//used to count the rows
+		// Used to count the rows
 		int numRows = 0;
 		List<List<String>> Data = new ArrayList<List<String>>();
 		BufferedReader br = null;
 		try {
-			br = new BufferedReader(new FileReader("DataInput/" + filename));
-			// seperating the first line and setting up the tags to add to the data
+			br = new BufferedReader(new FileReader(filename));
+			// Separating the first line and setting up the tags to add to the data
 			String line = br.readLine();
 			String[] tags = line.split(" +");
 
-
-			//loops through the file, reading line by line
-			//splits the line, then adds the tags to the corresponding value
-			//adds the split line into the data array
+			// Loops through the file, reading line by line
+			// Splits the line, then adds the tags to the corresponding value
+			// Adds the split line into the data array
 			line = br.readLine();
 			while (line != null) {
-				numRows++;
 				String[] split = line.split(" +");
-				for (int i=0; i < split.length; i++) {
-					split[i] = tags[i] + "=" + split[i];
+				if(split.length == tags.length) {
+					numRows++;
+					for (int i = 0; i < split.length; i++) {
+						split[i] = tags[i] + "=" + split[i];
+					}
 				}
 
 				Data.add(Arrays.asList(split));
 				line = br.readLine();
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
-			System.out.println(e);
 			System.out.println("No file found.");
 			return;
 		} finally {
@@ -102,35 +102,12 @@ public class Main {
 				System.out.println("Error closing the reader");
 			}
 		}
-		///////////////////////////
 
-		/*
-		//TODO: Remove this roughed out input and replace with a real one
-		List<List<String>> fakeData = new ArrayList<List<String>>();
-		// Setting up some faked data from DATA1 for Michael to work with
-		fakeData.add(Arrays.asList("outlook=sunny", "temperature=hot", "Humidity=high", "Windy=false", "PlayTennis=N"));
-		fakeData.add(Arrays.asList("outlook=sunny", "temperature=hot", "Humidity=high", "Windy=true", "PlayTennis=N"));
-		fakeData.add(Arrays.asList("outlook=overcast", "temperature=hot", "Humidity=high", "Windy=false", "PlayTennis=P"));
-		fakeData.add(Arrays.asList("outlook=rain", "temperature=mild", "Humidity=high", "Windy=false", "PlayTennis=P"));
-		fakeData.add(Arrays.asList("outlook=rain", "temperature=cool", "Humidity=normal", "Windy=false", "PlayTennis=P"));
-		fakeData.add(Arrays.asList("outlook=rain", "temperature=cool", "Humidity=normal", "Windy=true", "PlayTennis=N"));
-		fakeData.add(Arrays.asList("outlook=overcast", "temperature=cool", "Humidity=normal", "Windy=true", "PlayTennis=P"));
-		fakeData.add(Arrays.asList("outlook=sunny", "temperature=mild", "Humidity=high", "Windy=false", "PlayTennis=N"));
-		fakeData.add(Arrays.asList("outlook=sunny", "temperature=cool", "Humidity=normal", "Windy=false", "PlayTennis=P"));
-		fakeData.add(Arrays.asList("outlook=rain", "temperature=mild", "Humidity=normal", "Windy=false", "PlayTennis=P"));
-		fakeData.add(Arrays.asList("outlook=sunny", "temperature=mild", "Humidity=normal", "Windy=true", "PlayTennis=P"));
-		fakeData.add(Arrays.asList("outlook=overcast", "temperature=mild", "Humidity=high", "Windy=true", "PlayTennis=P"));
-		fakeData.add(Arrays.asList("outlook=overcast", "temperature=hot", "Humidity=normal", "Windy=false", "PlayTennis=P"));
-		fakeData.add(Arrays.asList("outlook=rain", "temperature=mild", "Humidity=high", "Windy=true", "PlayTennis=N"));
-*/
-		double minSupport = .25, minConfidence = 0.5;
-
+		// Passes the input to the apriori algorithm. Gets a list of rules in return.
 		List<String> rules = Apriori.runApriori(Data, support, confidence);
-		//System.out.println("Fake rules:\n" + rules);
-		// End of the roughed out temporary Apriori utilization
 
-		//outputs the summary and discovered rules to a file named "Rules"
-		//tries to open a file, and creates one if its not found.
+		// Outputs the summary and discovered rules to a file named "Rules"
+		// Overwrites a file if it already exists, and creates one if it does not.
 		BufferedWriter bw = null;
 		try {
 			File outPut = new File("Rules");
@@ -157,8 +134,6 @@ public class Main {
 			} catch(Exception e) {
 				System.out.println("Error closing the writer.");
 			}
-
 		}
 	}
-
 }
